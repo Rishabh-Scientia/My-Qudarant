@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from './context/AuthContext'
 import { AuthScreen } from './components/auth/AuthScreen'
 import { Header } from './components/layout/Header'
+import { MobileBottomNav, MobileTabType } from './components/layout/MobileBottomNav'
 import { HeroKpiStrip } from './components/dashboard/HeroKpiStrip'
 import { AssetsColumn } from './components/dashboard/AssetsColumn'
 import { LiabilitiesColumn } from './components/dashboard/LiabilitiesColumn'
@@ -24,6 +25,9 @@ export function App() {
   const [selectedMonth, setSelectedMonth] = useState<string>(() =>
     format(new Date(), 'yyyy-MM')
   )
+
+  // Mobile navigation active tab
+  const [mobileTab, setMobileTab] = useState<MobileTabType>('overview')
 
   // Modals state
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
@@ -87,6 +91,19 @@ export function App() {
     setIsQuickAddOpen(true)
   }
 
+  // Contextual quick add from mobile center button
+  const handleMobileCenterAdd = () => {
+    if (mobileTab === 'assets') {
+      handleOpenQuickAdd('asset')
+    } else if (mobileTab === 'liabilities') {
+      handleOpenQuickAdd('liability')
+    } else if (mobileTab === 'cashflow') {
+      handleOpenQuickAdd('income')
+    } else {
+      handleOpenQuickAdd('income')
+    }
+  }
+
   // Handle deletion triggers
   const handleDeleteTrigger = (
     type: 'asset' | 'liability' | 'income' | 'expense',
@@ -117,6 +134,11 @@ export function App() {
     }
   }
 
+  const totalAssetCashflow = assets.reduce(
+    (sum, a) => sum + (Number(a.monthly_income_generated) || 0),
+    0
+  )
+
   return (
     <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-900 selection:text-white">
       {/* Top Header */}
@@ -129,7 +151,7 @@ export function App() {
       />
 
       {/* Main Single-Screen Content Frame */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-5 flex flex-col gap-3.5">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-5 flex flex-col gap-3.5 pb-24 lg:pb-6">
         {isDataLoading ? (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -147,62 +169,137 @@ export function App() {
           </div>
         ) : (
           <>
-            {/* 1. Hero KPI Strip */}
-            <HeroKpiStrip metrics={metrics} />
+            {/* ==================================================== */}
+            {/* DESKTOP LAYOUT (>= 1024px)                          */}
+            {/* ==================================================== */}
+            <div className="hidden lg:flex lg:flex-col lg:gap-3.5">
+              {/* 1. Hero KPI Strip */}
+              <HeroKpiStrip metrics={metrics} />
 
-            {/* 2. 3-Column Core Action Matrix */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 items-stretch">
-              {/* Column 1: Assets & Liquid Cash */}
-              <AssetsColumn
-                assets={assets}
-                cashHolding={currentMonthCash}
-                totalAssetsValue={metrics.totalAssets}
-                totalAssetCashflow={assets.reduce(
-                  (sum, a) => sum + (Number(a.monthly_income_generated) || 0),
-                  0
-                )}
-                onAddNew={() => handleOpenQuickAdd('asset')}
-                onAddCash={() => handleOpenQuickAdd('cash')}
-                onEdit={setEditingItem}
-                onDelete={(type, id, name) =>
-                  handleDeleteTrigger(type as any, id, name)
-                }
-              />
+              {/* 2. 3-Column Core Action Matrix */}
+              <div className="grid grid-cols-3 gap-3.5 items-stretch">
+                {/* Column 1: Assets & Liquid Cash */}
+                <AssetsColumn
+                  assets={assets}
+                  cashHolding={currentMonthCash}
+                  totalAssetsValue={metrics.totalAssets}
+                  totalAssetCashflow={totalAssetCashflow}
+                  onAddNew={() => handleOpenQuickAdd('asset')}
+                  onAddCash={() => handleOpenQuickAdd('cash')}
+                  onEdit={setEditingItem}
+                  onDelete={(type, id, name) =>
+                    handleDeleteTrigger(type as any, id, name)
+                  }
+                />
 
-              {/* Column 2: Liabilities & Good/Bad Debt */}
-              <LiabilitiesColumn
-                liabilities={liabilities}
-                totalLiabilities={metrics.totalLiabilities}
-                totalEmi={metrics.emiExpenses}
-                onAddNew={() => handleOpenQuickAdd('liability')}
-                onEdit={setEditingItem}
-                onDelete={(id, name) => handleDeleteTrigger('liability', id, name)}
-              />
+                {/* Column 2: Liabilities & Good/Bad Debt */}
+                <LiabilitiesColumn
+                  liabilities={liabilities}
+                  totalLiabilities={metrics.totalLiabilities}
+                  totalEmi={metrics.emiExpenses}
+                  onAddNew={() => handleOpenQuickAdd('liability')}
+                  onEdit={setEditingItem}
+                  onDelete={(id, name) => handleDeleteTrigger('liability', id, name)}
+                />
 
-              {/* Column 3: Monthly Cashflow (Incomes & Expenses) */}
-              <CashflowColumn
-                incomeEntries={currentMonthIncomes}
-                expenseEntries={currentMonthExpenses}
-                totalIncome={metrics.totalIncome}
-                activeIncome={metrics.activeIncome}
-                passiveIncome={metrics.passiveIncome}
-                totalExpenses={metrics.totalExpenses}
-                netCashflow={metrics.netMonthlyCashflow}
-                onAddNewIncome={() => handleOpenQuickAdd('income')}
-                onAddNewExpense={() => handleOpenQuickAdd('expense')}
-                onEdit={setEditingItem}
-                onDeleteIncome={(id, name) => handleDeleteTrigger('income', id, name)}
-                onDeleteExpense={(id, name) =>
-                  handleDeleteTrigger('expense', id, name)
-                }
-              />
+                {/* Column 3: Monthly Cashflow (Incomes & Expenses) */}
+                <CashflowColumn
+                  incomeEntries={currentMonthIncomes}
+                  expenseEntries={currentMonthExpenses}
+                  totalIncome={metrics.totalIncome}
+                  activeIncome={metrics.activeIncome}
+                  passiveIncome={metrics.passiveIncome}
+                  totalExpenses={metrics.totalExpenses}
+                  netCashflow={metrics.netMonthlyCashflow}
+                  onAddNewIncome={() => handleOpenQuickAdd('income')}
+                  onAddNewExpense={() => handleOpenQuickAdd('expense')}
+                  onEdit={setEditingItem}
+                  onDeleteIncome={(id, name) => handleDeleteTrigger('income', id, name)}
+                  onDeleteExpense={(id, name) =>
+                    handleDeleteTrigger('expense', id, name)
+                  }
+                />
+              </div>
+
+              {/* 3. Bottom Full-Width "Escape the Rat Race" Area Chart */}
+              <RatRaceChart data={monthlyTrends} />
             </div>
 
-            {/* 3. Bottom Full-Width "Escape the Rat Race" Area Chart */}
-            <RatRaceChart data={monthlyTrends} />
+            {/* ==================================================== */}
+            {/* MOBILE & TABLET LAYOUT (< 1024px)                    */}
+            {/* ==================================================== */}
+            <div className="flex flex-col gap-3 lg:hidden">
+              {mobileTab === 'overview' && (
+                <div className="flex flex-col gap-3.5 animate-fadeIn">
+                  <HeroKpiStrip metrics={metrics} />
+                  <RatRaceChart data={monthlyTrends} />
+                </div>
+              )}
+
+              {mobileTab === 'assets' && (
+                <div className="animate-fadeIn">
+                  <AssetsColumn
+                    assets={assets}
+                    cashHolding={currentMonthCash}
+                    totalAssetsValue={metrics.totalAssets}
+                    totalAssetCashflow={totalAssetCashflow}
+                    onAddNew={() => handleOpenQuickAdd('asset')}
+                    onAddCash={() => handleOpenQuickAdd('cash')}
+                    onEdit={setEditingItem}
+                    onDelete={(type, id, name) =>
+                      handleDeleteTrigger(type as any, id, name)
+                    }
+                  />
+                </div>
+              )}
+
+              {mobileTab === 'liabilities' && (
+                <div className="animate-fadeIn">
+                  <LiabilitiesColumn
+                    liabilities={liabilities}
+                    totalLiabilities={metrics.totalLiabilities}
+                    totalEmi={metrics.emiExpenses}
+                    onAddNew={() => handleOpenQuickAdd('liability')}
+                    onEdit={setEditingItem}
+                    onDelete={(id, name) => handleDeleteTrigger('liability', id, name)}
+                  />
+                </div>
+              )}
+
+              {mobileTab === 'cashflow' && (
+                <div className="animate-fadeIn">
+                  <CashflowColumn
+                    incomeEntries={currentMonthIncomes}
+                    expenseEntries={currentMonthExpenses}
+                    totalIncome={metrics.totalIncome}
+                    activeIncome={metrics.activeIncome}
+                    passiveIncome={metrics.passiveIncome}
+                    totalExpenses={metrics.totalExpenses}
+                    netCashflow={metrics.netMonthlyCashflow}
+                    onAddNewIncome={() => handleOpenQuickAdd('income')}
+                    onAddNewExpense={() => handleOpenQuickAdd('expense')}
+                    onEdit={setEditingItem}
+                    onDeleteIncome={(id, name) => handleDeleteTrigger('income', id, name)}
+                    onDeleteExpense={(id, name) =>
+                      handleDeleteTrigger('expense', id, name)
+                    }
+                  />
+                </div>
+              )}
+            </div>
           </>
         )}
       </main>
+
+      {/* MOBILE BOTTOM APP NAVIGATION DOCK */}
+      <MobileBottomNav
+        activeTab={mobileTab}
+        onChangeTab={setMobileTab}
+        onOpenQuickAdd={handleMobileCenterAdd}
+        assetsCount={assets.length}
+        liabilitiesCount={liabilities.length}
+        cashflowCount={currentMonthIncomes.length + currentMonthExpenses.length}
+      />
 
       {/* MODALS */}
       <QuickAddModal
