@@ -92,7 +92,7 @@ export const HeroKpiStrip: React.FC<HeroKpiStripProps> = ({ metrics }) => {
                 : 'text-zinc-900 dark:text-zinc-100'
             }`}
           >
-            {formatIndianCurrency(metrics.passiveIncomeGap, { showSign: true })}
+            {formatIndianCurrency(metrics.passiveIncomeGap, { showSign: true, autoCompact: true })}
             <span className="text-xs font-normal text-zinc-400 ml-1">/ mo</span>
           </div>
         </div>
@@ -101,13 +101,13 @@ export const HeroKpiStrip: React.FC<HeroKpiStripProps> = ({ metrics }) => {
           <div>
             <span className="text-zinc-400 block text-[10px]">Passive Income</span>
             <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
-              {formatIndianCurrency(metrics.passiveIncome)}
+              {formatIndianCurrency(metrics.passiveIncome, { autoCompact: true })}
             </span>
           </div>
           <div>
             <span className="text-zinc-400 block text-[10px]">Total Expenses</span>
             <span className="font-mono font-medium text-zinc-800 dark:text-zinc-200 tabular-nums">
-              {formatIndianCurrency(metrics.totalExpenses)}
+              {formatIndianCurrency(metrics.totalExpenses, { autoCompact: true })}
             </span>
           </div>
         </div>

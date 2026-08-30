@@ -71,30 +71,37 @@ export const CashflowColumn: React.FC<CashflowColumnProps> = ({
         </div>
 
         {/* 3-Part Summary Bar */}
-        <div className="grid grid-cols-3 gap-2 mt-2.5 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
+        <div className="grid grid-cols-3 gap-2 mt-2.5 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
           <div>
-            <span className="text-zinc-400 block text-[10px] uppercase tracking-wider mb-0.5">Inflow</span>
-            <span className="font-mono text-xs sm:text-[13px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap">
-              +{formatIndianCurrency(totalIncome)}
+            <span className="text-zinc-400 block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+              Inflow
+            </span>
+            <span className="font-mono text-sm sm:text-base md:text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap tracking-tight">
+              +{formatIndianCurrency(totalIncome, { autoCompact: true })}
             </span>
           </div>
           <div>
-            <span className="text-zinc-400 block text-[10px] uppercase tracking-wider mb-0.5">Outflow</span>
-            <span className="font-mono text-xs sm:text-[13px] font-bold text-zinc-900 dark:text-zinc-100 tabular-nums whitespace-nowrap">
-              -{formatIndianCurrency(totalExpenses)}
+            <span className="text-zinc-400 block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+              Outflow
+            </span>
+            <span className="font-mono text-sm sm:text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100 tabular-nums whitespace-nowrap tracking-tight">
+              -{formatIndianCurrency(totalExpenses, { autoCompact: true })}
             </span>
           </div>
           <div>
-            <span className="text-zinc-400 block text-[10px] uppercase tracking-wider mb-0.5">Net Cashflow</span>
+            <span className="text-zinc-400 block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+              Net Cashflow
+            </span>
             <span
               className={cn(
-                'font-mono text-xs sm:text-[13px] font-bold tabular-nums whitespace-nowrap',
+                'font-mono text-sm sm:text-base md:text-lg font-bold tabular-nums whitespace-nowrap tracking-tight',
                 netCashflow >= 0
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : 'text-rose-600 dark:text-rose-400'
               )}
             >
-              {netCashflow >= 0 ? '+' : ''}{formatIndianCurrency(netCashflow)}/mo
+              {netCashflow >= 0 ? '+' : ''}{formatIndianCurrency(netCashflow, { autoCompact: true })}
+              <span className="text-[11px] sm:text-xs font-normal text-zinc-400 ml-0.5">/mo</span>
             </span>
           </div>
         </div>

@@ -75,10 +75,10 @@ export const AssetsColumn: React.FC<AssetsColumnProps> = ({
               {assets.length}
             </span>
           </div>
-          <div className="flex items-center gap-2 mt-0.5 text-[11px] text-zinc-500 whitespace-nowrap">
-            <span>Val: <strong className="font-mono text-zinc-800 dark:text-zinc-200">{formatIndianCurrency(totalAssetsValue)}</strong></span>
+          <div className="flex items-center gap-2 mt-0.5 text-xs text-zinc-500 whitespace-nowrap">
+            <span>Val: <strong className="font-mono text-zinc-900 dark:text-zinc-100 font-bold">{formatIndianCurrency(totalAssetsValue, { autoCompact: true })}</strong></span>
             {totalAssetCashflow > 0 && (
-              <span>• Yield: <strong className="font-mono text-emerald-600 dark:text-emerald-400">+{formatIndianCurrency(totalAssetCashflow)}/mo</strong></span>
+              <span>• Yield: <strong className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">+{formatIndianCurrency(totalAssetCashflow, { autoCompact: true })}/mo</strong></span>
             )}
           </div>
         </div>

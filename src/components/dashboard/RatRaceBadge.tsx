@@ -45,7 +45,7 @@ export const RatRaceBadge: React.FC<RatRaceBadgeProps> = ({
               Passive Cashflow Surplus:
             </span>
             <span className="font-mono text-base font-bold text-emerald-700 dark:text-emerald-300 tabular-nums">
-              +{formatIndianCurrency(gap)}/mo
+              +{formatIndianCurrency(gap, { autoCompact: true })}/mo
             </span>
           </div>
 
@@ -91,7 +91,7 @@ export const RatRaceBadge: React.FC<RatRaceBadgeProps> = ({
             Monthly Gap to Cover:
           </span>
           <span className="font-mono text-base font-bold text-amber-700 dark:text-amber-400 tabular-nums">
-            {formatIndianCurrency(Math.abs(gap))}/mo
+            {formatIndianCurrency(Math.abs(gap), { autoCompact: true })}/mo
           </span>
         </div>
 
@@ -103,8 +103,8 @@ export const RatRaceBadge: React.FC<RatRaceBadgeProps> = ({
           />
         </div>
         <div className="mt-1.5 flex items-center justify-between text-[11px] text-zinc-500">
-          <span>Passive: {formatIndianCurrency(passiveIncome)}</span>
-          <span>Expenses: {formatIndianCurrency(totalExpenses)}</span>
+          <span>Passive: {formatIndianCurrency(passiveIncome, { autoCompact: true })}</span>
+          <span>Expenses: {formatIndianCurrency(totalExpenses, { autoCompact: true })}</span>
         </div>
       </div>
     </div>

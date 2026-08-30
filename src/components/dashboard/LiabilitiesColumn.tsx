@@ -47,10 +47,10 @@ export const LiabilitiesColumn: React.FC<LiabilitiesColumnProps> = ({
               {liabilities.length}
             </span>
           </div>
-          <div className="flex items-center gap-2 mt-0.5 text-[11px] text-zinc-500 whitespace-nowrap">
-            <span>Total: <strong className="font-mono text-rose-600 dark:text-rose-400">{formatIndianCurrency(totalLiabilities)}</strong></span>
+          <div className="flex items-center gap-2 mt-0.5 text-xs text-zinc-500 whitespace-nowrap">
+            <span>Total: <strong className="font-mono text-rose-600 dark:text-rose-400 font-bold">{formatIndianCurrency(totalLiabilities, { autoCompact: true })}</strong></span>
             {totalEmi > 0 && (
-              <span>• EMI: <strong className="font-mono text-zinc-800 dark:text-zinc-200">{formatIndianCurrency(totalEmi)}/mo</strong></span>
+              <span>• EMI: <strong className="font-mono text-zinc-900 dark:text-zinc-100 font-bold">{formatIndianCurrency(totalEmi, { autoCompact: true })}/mo</strong></span>
             )}
           </div>
         </div>
