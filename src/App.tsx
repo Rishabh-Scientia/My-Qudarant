@@ -150,8 +150,8 @@ export function App() {
         onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      {/* Main Single-Screen Content Frame */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-5 flex flex-col gap-3.5 pb-24 lg:pb-6">
+      {/* Main Content Frame */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-5 flex flex-col gap-3.5 pb-28 lg:pb-8">
         {isDataLoading ? (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">

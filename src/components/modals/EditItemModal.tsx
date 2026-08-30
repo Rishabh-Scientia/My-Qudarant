@@ -151,7 +151,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                 { value: 'other', label: 'Other Asset' },
               ]}
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Current Market Value"
                 type="number"
@@ -228,7 +228,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                 </div>
               </label>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               <Input
                 label="Outstanding Principal"
                 type="number"
@@ -275,7 +275,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
               onChange={(e) => setFormData({ ...formData, source: e.target.value })}
               placeholder="e.g. Primary Tech Salary, Consulting, Stock Dividends"
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Select
                 label="Income Type"
                 value={formData.type || 'active'}
@@ -309,7 +309,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="e.g. Groceries & Rent, Dining out, Electricity"
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Select
                 label="Category"
                 value={formData.category || 'needs'}

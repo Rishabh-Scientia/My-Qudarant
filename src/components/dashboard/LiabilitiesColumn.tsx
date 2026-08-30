@@ -65,7 +65,7 @@ export const LiabilitiesColumn: React.FC<LiabilitiesColumnProps> = ({
       </div>
 
       {/* Liabilities List */}
-      <div className="flex-1 overflow-y-auto max-h-[360px] divide-y divide-zinc-100 dark:divide-zinc-800/60 p-1">
+      <div className="flex-1 overflow-y-auto max-h-none lg:max-h-[360px] divide-y divide-zinc-100 dark:divide-zinc-800/60 p-1">
         {liabilities.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 text-center">
             <CreditCard className="h-8 w-8 text-zinc-300 dark:text-zinc-700 mb-2" />

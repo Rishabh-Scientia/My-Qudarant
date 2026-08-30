@@ -227,9 +227,9 @@ export const MonthlyCheckinModal: React.FC<MonthlyCheckinModalProps> = ({
             {incomes.map((item, idx) => (
               <div
                 key={item.id}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                className="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-xs"
               >
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <Input
                     placeholder="Income source name"
                     value={item.source}
@@ -240,42 +240,45 @@ export const MonthlyCheckinModal: React.FC<MonthlyCheckinModalProps> = ({
                     }}
                   />
                 </div>
-                <div className="w-36">
-                  <Select
-                    value={item.type}
-                    onChange={(e) => {
-                      const updated = [...incomes]
-                      updated[idx].type = e.target.value as any
-                      setIncomes(updated)
-                    }}
-                    options={[
-                      { value: 'active', label: 'Active' },
-                      { value: 'passive', label: 'Passive ⭐' },
-                    ]}
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 sm:w-36">
+                    <Select
+                      value={item.type}
+                      onChange={(e) => {
+                        const updated = [...incomes]
+                        updated[idx].type = e.target.value as any
+                        setIncomes(updated)
+                      }}
+                      options={[
+                        { value: 'active', label: 'Active' },
+                        { value: 'passive', label: 'Passive ⭐' },
+                      ]}
+                    />
+                  </div>
+                  <div className="flex-1 sm:w-32">
+                    <Input
+                      type="number"
+                      leftPrefix="₹"
+                      placeholder="0"
+                      value={item.amount}
+                      onChange={(e) => {
+                        const updated = [...incomes]
+                        updated[idx].amount = e.target.value
+                        setIncomes(updated)
+                      }}
+                    />
+                  </div>
+                  {incomes.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeIncomeRow(item.id)}
+                      className="p-2 text-zinc-400 hover:text-rose-600 active:scale-95 transition-colors shrink-0"
+                      title="Remove row"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
-                <div className="w-32">
-                  <Input
-                    type="number"
-                    leftPrefix="₹"
-                    placeholder="0"
-                    value={item.amount}
-                    onChange={(e) => {
-                      const updated = [...incomes]
-                      updated[idx].amount = e.target.value
-                      setIncomes(updated)
-                    }}
-                  />
-                </div>
-                {incomes.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeIncomeRow(item.id)}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
               </div>
             ))}
           </div>
@@ -328,9 +331,9 @@ export const MonthlyCheckinModal: React.FC<MonthlyCheckinModalProps> = ({
             {expenses.map((item, idx) => (
               <div
                 key={item.id}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                className="flex flex-col sm:flex-row sm:items-center gap-2 p-2.5 rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-xs"
               >
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <Input
                     placeholder="Expense description"
                     value={item.description}
@@ -341,44 +344,47 @@ export const MonthlyCheckinModal: React.FC<MonthlyCheckinModalProps> = ({
                     }}
                   />
                 </div>
-                <div className="w-36">
-                  <Select
-                    value={item.category}
-                    onChange={(e) => {
-                      const updated = [...expenses]
-                      updated[idx].category = e.target.value as any
-                      setExpenses(updated)
-                    }}
-                    options={[
-                      { value: 'needs', label: 'Needs' },
-                      { value: 'wants', label: 'Wants' },
-                      { value: 'emi_payments', label: 'EMI / Debt' },
-                      { value: 'other', label: 'Other' },
-                    ]}
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 sm:w-36">
+                    <Select
+                      value={item.category}
+                      onChange={(e) => {
+                        const updated = [...expenses]
+                        updated[idx].category = e.target.value as any
+                        setExpenses(updated)
+                      }}
+                      options={[
+                        { value: 'needs', label: 'Needs' },
+                        { value: 'wants', label: 'Wants' },
+                        { value: 'emi_payments', label: 'EMI / Debt' },
+                        { value: 'other', label: 'Other' },
+                      ]}
+                    />
+                  </div>
+                  <div className="flex-1 sm:w-32">
+                    <Input
+                      type="number"
+                      leftPrefix="₹"
+                      placeholder="0"
+                      value={item.amount}
+                      onChange={(e) => {
+                        const updated = [...expenses]
+                        updated[idx].amount = e.target.value
+                        setExpenses(updated)
+                      }}
+                    />
+                  </div>
+                  {expenses.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeExpenseRow(item.id)}
+                      className="p-2 text-zinc-400 hover:text-rose-600 active:scale-95 transition-colors shrink-0"
+                      title="Remove row"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
-                <div className="w-32">
-                  <Input
-                    type="number"
-                    leftPrefix="₹"
-                    placeholder="0"
-                    value={item.amount}
-                    onChange={(e) => {
-                      const updated = [...expenses]
-                      updated[idx].amount = e.target.value
-                      setExpenses(updated)
-                    }}
-                  />
-                </div>
-                {expenses.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeExpenseRow(item.id)}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
               </div>
             ))}
           </div>

@@ -170,21 +170,21 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       maxWidth="md"
     >
       {/* Category selector pills */}
-      <div className="flex rounded-lg bg-zinc-100 p-1 dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-800 mb-4">
+      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar rounded-xl bg-zinc-100/90 p-1 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 mb-4 select-none touch-manipulation">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-medium transition-all',
+              'flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 flex-1',
               activeTab === tab.id
-                ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100'
+                ? 'bg-white text-zinc-900 shadow-xs dark:bg-zinc-800 dark:text-zinc-100'
                 : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
             )}
           >
             {tab.icon}
-            {tab.label}
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
@@ -201,7 +201,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               onChange={(e) => setIncomeData({ ...incomeData, source: e.target.value })}
               autoFocus
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Select
                 label="Quadrant Type"
                 value={incomeData.type}
@@ -246,7 +246,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               }
               autoFocus
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Select
                 label="Expense Category"
                 value={expenseData.category}
@@ -304,7 +304,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 { value: 'other', label: 'Other Asset' },
               ]}
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Current Portfolio Value"
                 type="number"
@@ -397,7 +397,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 </div>
               </label>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               <Input
                 label="Outstanding Principal"
                 type="number"

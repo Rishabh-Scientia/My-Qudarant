@@ -64,7 +64,7 @@ export const RatRaceChart: React.FC<RatRaceChartProps> = ({ data = [] }) => {
     <div className="rounded-xl border border-zinc-200/90 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900 shadow-subtle">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
               Escaping the Rat Race — Cashflow Trajectory
             </h3>
@@ -78,7 +78,7 @@ export const RatRaceChart: React.FC<RatRaceChartProps> = ({ data = [] }) => {
               </span>
             )}
           </div>
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-[11px] text-zinc-500 mt-0.5">
             Freedom is reached when the <span className="font-semibold text-emerald-600 dark:text-emerald-400">Green Line (Passive Income)</span> crosses above the <span className="font-semibold text-rose-500 dark:text-rose-400">Red Line (Living Expenses)</span>.
           </p>
         </div>
