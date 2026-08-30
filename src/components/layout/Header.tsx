@@ -8,6 +8,7 @@ import {
   LogOut,
   User,
   BookOpen,
+  Calculator,
 } from 'lucide-react'
 
 interface HeaderProps {
@@ -60,6 +61,18 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
+          {/* EMI Calculator Tool Link */}
+          <a
+            href="/emi-calculator"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open Loan EMI Calculator in a new tab"
+            className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/80 transition-colors active:scale-95 border border-emerald-200 dark:border-emerald-800"
+          >
+            <Calculator className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="hidden sm:inline text-[11px]">EMI Calc</span>
+          </a>
+
           {/* Guide / Landing Page Link */}
           {onOpenGuide && (
             <button

@@ -59,7 +59,16 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onOpenAuth }) => {
           <span>© {new Date().getFullYear()} — Built for Indian Wealth Builders.</span>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-5 sm:gap-6">
+          <a
+            href="/emi-calculator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-700 dark:text-emerald-400 font-semibold hover:underline flex items-center gap-1"
+          >
+            <span>EMI Calculator</span>
+            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 px-1 rounded">PRO</span>
+          </a>
           <a href="#quadrants" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
             4 Quadrants
           </a>

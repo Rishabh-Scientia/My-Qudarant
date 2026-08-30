@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from '../ui/Button'
 import { useAuth } from '../../context/AuthContext'
-import { Sparkles, ArrowRight, Menu, X, LayoutDashboard } from 'lucide-react'
+import { Sparkles, ArrowRight, Menu, X, LayoutDashboard, Calculator, ExternalLink } from 'lucide-react'
 
 interface LandingNavbarProps {
   onOpenAuth: (mode?: 'signin' | 'signup') => void
@@ -59,7 +59,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
         </a>
 
         {/* Center Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+        <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-zinc-600 dark:text-zinc-400">
           {navLinks.map((link) => (
             <a
               key={link.label}
@@ -70,6 +70,18 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
               {link.label}
             </a>
           ))}
+
+          {/* Dedicated EMI Calculator Tab (Opens in New Tab) */}
+          <a
+            href="/emi-calculator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50/80 px-2.5 py-1 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:hover:bg-emerald-900/80 transition-all shadow-2xs group"
+          >
+            <Calculator className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
+            <span>EMI Calculator</span>
+            <ExternalLink className="h-3 w-3 text-emerald-600/70 dark:text-emerald-400/70" />
+          </a>
         </nav>
 
         {/* Right CTA Actions */}
@@ -110,6 +122,17 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-2 sm:hidden">
+          <a
+            href="/emi-calculator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1 text-[11px] font-bold"
+            title="Open EMI Calculator in new tab"
+          >
+            <Calculator className="h-3.5 w-3.5" />
+            <span>EMI</span>
+          </a>
+
           {user ? (
             <Button
               variant="primary"
@@ -155,6 +178,20 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
                 {link.label}
               </a>
             ))}
+
+            <a
+              href="/emi-calculator"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-bold flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <Calculator className="h-4 w-4" />
+                <span>EMI Calculator (Free Tool)</span>
+              </div>
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           </div>
 
           <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-2">

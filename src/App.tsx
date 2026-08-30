@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from './context/AuthContext'
 import { LandingPage } from './components/landing/LandingPage'
+import { EmiCalculatorPage } from './components/calculator/EmiCalculatorPage'
 import { Header } from './components/layout/Header'
 import { MobileBottomNav, MobileTabType } from './components/layout/MobileBottomNav'
 import { HeroKpiStrip } from './components/dashboard/HeroKpiStrip'
@@ -18,8 +19,41 @@ import { useFinanceData } from './hooks/useFinanceData'
 import { useFinanceMutations } from './hooks/useFinanceMutations'
 import { format } from 'date-fns'
 
+function checkIsEmiCalculatorRoute(): boolean {
+  if (typeof window === 'undefined') return false
+  const path = window.location.pathname.toLowerCase()
+  const hash = window.location.hash.toLowerCase()
+  const search = window.location.search.toLowerCase()
+  return (
+    path === '/emi-calculator' ||
+    path.startsWith('/emi-calculator') ||
+    path === '/calculator' ||
+    hash === '#emi-calculator' ||
+    hash === '#calculator' ||
+    search.includes('tab=emi-calculator')
+  )
+}
+
 export function App() {
   const { user, isLoading: isAuthLoading } = useAuth()
+
+  // Standalone EMI Calculator route state (No auth required)
+  const [isEmiCalculator, setIsEmiCalculator] = useState<boolean>(() =>
+    checkIsEmiCalculatorRoute()
+  )
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setIsEmiCalculator(checkIsEmiCalculatorRoute())
+    }
+
+    window.addEventListener('popstate', handleRouteChange)
+    window.addEventListener('hashchange', handleRouteChange)
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange)
+      window.removeEventListener('hashchange', handleRouteChange)
+    }
+  }, [])
 
   // View state for logged in users (toggle between Dashboard & Guide)
   const [showGuide, setShowGuide] = useState(false)
@@ -70,6 +104,11 @@ export function App() {
     deleteIncome,
     deleteExpense,
   } = useFinanceMutations()
+
+  // Public Standalone EMI Calculator (No auth needed)
+  if (isEmiCalculator) {
+    return <EmiCalculatorPage />
+  }
 
   // Loading state
   if (isAuthLoading) {

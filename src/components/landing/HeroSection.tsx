@@ -7,6 +7,7 @@ import {
   CheckCircle,
   Clock,
   Coins,
+  Calculator,
 } from 'lucide-react'
 
 interface HeroSectionProps {
@@ -69,6 +70,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAuth }) => {
             >
               See How It Works
             </Button>
+            <a
+              href="/emi-calculator"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 dark:hover:bg-emerald-900 transition-all shadow-xs group"
+              title="Open Loan EMI Calculator in a new tab"
+            >
+              <Calculator className="h-4 w-4 text-emerald-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform" />
+              <span>EMI Calculator</span>
+              <span className="rounded bg-emerald-200/80 px-1.5 py-0.5 text-[10px] font-bold dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200">
+                Free
+              </span>
+            </a>
           </div>
 
           {/* Trust Highlights */}
