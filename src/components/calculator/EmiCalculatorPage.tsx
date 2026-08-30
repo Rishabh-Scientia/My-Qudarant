@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import {
   calculateLoanDetails,
-  downloadAmortizationCsv,
   LoanCalculationResult,
   AmortizationYear,
 } from '../../utils/emiCalculator'
@@ -11,7 +10,6 @@ import {
   Calculator,
   Calendar,
   Percent,
-  Download,
   Printer,
   Sparkles,
   Home,
@@ -112,8 +110,10 @@ export const EmiCalculatorPage: React.FC = () => {
   const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>({ 1: true })
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return document.documentElement.classList.contains('dark') ||
+    return (
+      document.documentElement.classList.contains('dark') ||
       window.matchMedia('(prefers-color-scheme: dark)').matches
+    )
   })
 
   // Toggle Theme helper
@@ -244,9 +244,74 @@ export const EmiCalculatorPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-zinc-900 selection:text-white">
       {/* ========================================================================= */}
-      {/* 1. TOP NAVIGATION HEADER                                                 */}
+      {/* PRINT-ONLY EXECUTIVE DOCUMENT HEADER & SUMMARY                           */}
       {/* ========================================================================= */}
-      <header className="sticky top-0 z-40 border-b border-zinc-200/90 bg-white/95 dark:border-zinc-800 dark:bg-zinc-950/95 backdrop-blur-md transition-all shadow-xs">
+      <div className="hidden print:block p-4 text-black bg-white border-b-2 border-zinc-800 mb-4">
+        <div className="flex items-center justify-between border-b border-zinc-300 pb-3 mb-3">
+          <div className="flex items-center gap-2">
+            <div className="border border-black p-1 text-xs font-bold leading-none">
+              E | B
+              <br />
+              S | I
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">MY QUADRANT</h1>
+              <p className="text-xs text-zinc-600">
+                Loan EMI & Repayment Amortization Schedule
+              </p>
+            </div>
+          </div>
+          <div className="text-right text-xs text-zinc-600">
+            <p><strong>Report Date:</strong> {format(new Date(), 'dd MMM yyyy, hh:mm a')}</p>
+            <p><strong>Disbursement:</strong> {format(new Date(disbursementDate), 'dd MMM yyyy')}</p>
+          </div>
+        </div>
+
+        {/* Structured Executive Summary Grid */}
+        <div className="grid grid-cols-4 gap-2 text-xs border border-zinc-400 p-3 bg-zinc-50 rounded">
+          <div className="border-r border-zinc-300 pr-2">
+            <span className="text-[10px] text-zinc-500 uppercase block font-semibold">Principal Loan</span>
+            <span className="text-sm font-bold font-mono text-zinc-900">
+              {formatIndianCurrency(result.principal)}
+            </span>
+          </div>
+          <div className="border-r border-zinc-300 pr-2 pl-2">
+            <span className="text-[10px] text-zinc-500 uppercase block font-semibold">Interest Rate</span>
+            <span className="text-sm font-bold font-mono text-zinc-900">
+              {result.annualRate}% p.a.
+            </span>
+          </div>
+          <div className="border-r border-zinc-300 pr-2 pl-2">
+            <span className="text-[10px] text-zinc-500 uppercase block font-semibold">Monthly EMI</span>
+            <span className="text-sm font-bold font-mono text-emerald-800">
+              {formatIndianCurrency(result.monthlyEmi)}/mo
+            </span>
+          </div>
+          <div className="pl-2">
+            <span className="text-[10px] text-zinc-500 uppercase block font-semibold">Total Payable</span>
+            <span className="text-sm font-bold font-mono text-zinc-900">
+              {formatIndianCurrency(result.totalPayment)}
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 text-[11px] mt-2 pt-2 border-t border-zinc-200">
+          <div>
+            <strong>Total Interest:</strong> {formatIndianCurrency(result.totalInterest)} ({result.interestRatio}%)
+          </div>
+          <div>
+            <strong>Tenure:</strong> {result.tenureMonths} Months ({tenureType === 'years' ? `${tenureValue} Yrs` : `${(tenureValue / 12).toFixed(1)} Yrs`})
+          </div>
+          <div>
+            <strong>Payoff Date:</strong> {result.loanEndDate}
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 1. TOP NAVIGATION HEADER (HIDDEN ON PRINT)                                */}
+      {/* ========================================================================= */}
+      <header className="print:hidden sticky top-0 z-40 border-b border-zinc-200/90 bg-white/95 dark:border-zinc-800 dark:bg-zinc-950/95 backdrop-blur-md transition-all shadow-xs">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           {/* Brand & Title */}
           <div className="flex items-center gap-3">
@@ -294,26 +359,15 @@ export const EmiCalculatorPage: React.FC = () => {
               {darkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-zinc-600" />}
             </button>
 
-            {/* Print Button */}
+            {/* Print / PDF Button */}
             <button
               type="button"
               onClick={handlePrint}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              title="Print Amortization Schedule"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 transition-colors shadow-xs"
+              title="Print or Save Schedule as PDF"
             >
-              <Printer className="h-3.5 w-3.5" />
-              <span>Print</span>
-            </button>
-
-            {/* CSV Export Button */}
-            <button
-              type="button"
-              onClick={() => downloadAmortizationCsv(result)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 dark:hover:bg-emerald-900 transition-colors shadow-xs"
-              title="Download Amortization Schedule as CSV Spreadsheet"
-            >
-              <Download className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span className="hidden xs:inline">Export</span> CSV
+              <Printer className="h-3.5 w-3.5 text-zinc-700 dark:text-zinc-300" />
+              <span>Print / PDF</span>
             </button>
 
             {/* Back to Quadrant App */}
@@ -330,9 +384,9 @@ export const EmiCalculatorPage: React.FC = () => {
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. HERO / PRESET BAR                                                     */}
+      {/* 2. HERO / PRESET BAR (HIDDEN ON PRINT)                                    */}
       {/* ========================================================================= */}
-      <div className="bg-white dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 sm:px-6">
+      <div className="print:hidden bg-white dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800 py-3 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
@@ -370,10 +424,11 @@ export const EmiCalculatorPage: React.FC = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. MAIN CALCULATOR CORE MATRIX                                           */}
+      {/* 3. MAIN CALCULATOR CORE MATRIX (INTERACTIVE)                             */}
       {/* ========================================================================= */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6 print:p-0 print:gap-4">
+        {/* INTERACTIVE ROW (LEFT INPUTS & RIGHT CHARTS) - HIDDEN ON PRINT           */}
+        <div className="print:hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* --------------------------------------------------------------------- */}
           {/* LEFT COLUMN: INTERACTIVE INPUT CONTROLS (5 Cols)                      */}
           {/* --------------------------------------------------------------------- */}
@@ -556,7 +611,7 @@ export const EmiCalculatorPage: React.FC = () => {
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-1 rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-1 text-sm font-bold font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
+                    <div className="flex items-center gap-1 rounded-lg border border-zinc-300 bg-zinc-50 px-2.5 py-1 text-sm font-bold font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
                       <input
                         type="number"
                         min={1}
@@ -584,8 +639,14 @@ export const EmiCalculatorPage: React.FC = () => {
                 />
 
                 <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
-                  <span>Total Installments: <strong>{tenureMonths} Monthly EMIs</strong></span>
-                  <span>{tenureType === 'years' ? `${tenureValue * 12} Mos` : `${(tenureValue / 12).toFixed(1)} Yrs`}</span>
+                  <span>
+                    Total Installments: <strong>{tenureMonths} Monthly EMIs</strong>
+                  </span>
+                  <span>
+                    {tenureType === 'years'
+                      ? `${tenureValue * 12} Mos`
+                      : `${(tenureValue / 12).toFixed(1)} Yrs`}
+                  </span>
                 </div>
               </div>
 
@@ -624,7 +685,11 @@ export const EmiCalculatorPage: React.FC = () => {
                       Save Lakhs
                     </span>
                   </span>
-                  {showPrepayment ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  {showPrepayment ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
                 </button>
 
                 {showPrepayment && (
@@ -661,11 +726,15 @@ export const EmiCalculatorPage: React.FC = () => {
                       <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 p-2.5 text-xs space-y-1">
                         <div className="flex items-center justify-between text-emerald-800 dark:text-emerald-300 font-bold">
                           <span>Total Interest Saved:</span>
-                          <span className="font-mono text-sm">{formatIndianCurrency(interestSaved)}</span>
+                          <span className="font-mono text-sm">
+                            {formatIndianCurrency(interestSaved)}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between text-emerald-700 dark:text-emerald-400 text-[11px]">
                           <span>Loan Closes Early By:</span>
-                          <span className="font-mono font-bold">{monthsSaved} Months ({(monthsSaved / 12).toFixed(1)} Years)</span>
+                          <span className="font-mono font-bold">
+                            {monthsSaved} Months ({(monthsSaved / 12).toFixed(1)} Years)
+                          </span>
                         </div>
                       </div>
                     )}
@@ -681,7 +750,8 @@ export const EmiCalculatorPage: React.FC = () => {
                 <span>Rich Dad Golden Rule on Debt</span>
               </div>
               <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                <strong>Good Debt:</strong> Debt paid off by assets or tenants (e.g. rental real estate where rental income &gt; EMI).<br />
+                <strong>Good Debt:</strong> Debt paid off by assets or tenants (e.g. rental real estate where rental income &gt; EMI).
+                <br />
                 <strong>Bad Debt:</strong> Debt paid from your own pocket & active salary (e.g. luxury cars, credit cards, high personal loans).
               </p>
             </div>
@@ -704,7 +774,9 @@ export const EmiCalculatorPage: React.FC = () => {
                   </span>
                   <div className="flex items-baseline gap-2 mt-1">
                     <span className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-white tabular-nums">
-                      {formatIndianCurrency(result.monthlyEmi + (showPrepayment ? extraPayment : 0))}
+                      {formatIndianCurrency(
+                        result.monthlyEmi + (showPrepayment ? extraPayment : 0)
+                      )}
                     </span>
                     <span className="text-xs text-zinc-400 font-medium">/ month</span>
                   </div>
@@ -839,14 +911,18 @@ export const EmiCalculatorPage: React.FC = () => {
                     <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0" />
                     <div className="truncate">
                       <span className="text-zinc-500 block text-[10px]">Principal</span>
-                      <strong className="font-mono text-zinc-900 dark:text-zinc-100">{result.principalRatio}%</strong>
+                      <strong className="font-mono text-zinc-900 dark:text-zinc-100">
+                        {result.principalRatio}%
+                      </strong>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="h-2.5 w-2.5 rounded-full bg-amber-500 shrink-0" />
                     <div className="truncate">
                       <span className="text-zinc-500 block text-[10px]">Total Interest</span>
-                      <strong className="font-mono text-zinc-900 dark:text-zinc-100">{result.interestRatio}%</strong>
+                      <strong className="font-mono text-zinc-900 dark:text-zinc-100">
+                        {result.interestRatio}%
+                      </strong>
                     </div>
                   </div>
                 </div>
@@ -863,18 +939,20 @@ export const EmiCalculatorPage: React.FC = () => {
 
                 <div className="h-48">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={trajectoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <AreaChart
+                      data={trajectoryData}
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
                       <defs>
                         <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
                           <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
                         </linearGradient>
-                        <linearGradient id="interestGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
-                          <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
-                        </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#27272a' : '#f4f4f5'} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke={darkMode ? '#27272a' : '#f4f4f5'}
+                      />
                       <XAxis
                         dataKey="name"
                         tick={{ fontSize: 10, fill: darkMode ? '#a1a1aa' : '#71717a' }}
@@ -921,9 +999,9 @@ export const EmiCalculatorPage: React.FC = () => {
         {/* ======================================================================= */}
         {/* 4. DETAILED AMORTIZATION SCHEDULE TABLE                                 */}
         {/* ======================================================================= */}
-        <section className="rounded-2xl border border-zinc-200/90 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-sm overflow-hidden mt-2">
-          {/* Table Header Controls */}
-          <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-50/50 dark:bg-zinc-900/50">
+        <section className="rounded-2xl border border-zinc-200/90 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-sm overflow-hidden mt-2 print:border-none print:shadow-none print:mt-0">
+          {/* Table Header Controls (HIDDEN ON PRINT) */}
+          <div className="print:hidden p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-50/50 dark:bg-zinc-900/50">
             <div>
               <div className="flex items-center gap-2">
                 <Layers className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -983,22 +1061,22 @@ export const EmiCalculatorPage: React.FC = () => {
                 </div>
               )}
 
-              {/* CSV Export Button */}
+              {/* Print Button in Table Toolbar */}
               <button
                 type="button"
-                onClick={() => downloadAmortizationCsv(result)}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg border border-emerald-300 bg-emerald-50 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 transition-colors"
-                title="Download CSV"
+                onClick={handlePrint}
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 transition-colors shadow-2xs"
+                title="Print or Save Schedule as PDF"
               >
-                <Download className="h-3.5 w-3.5" />
-                <span>Export CSV</span>
+                <Printer className="h-3.5 w-3.5 text-zinc-700 dark:text-zinc-300" />
+                <span>Print Schedule</span>
               </button>
             </div>
           </div>
 
-          {/* Search bar in monthly mode */}
+          {/* Search bar in monthly mode (HIDDEN ON PRINT) */}
           {tableMode === 'monthly' && (
-            <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between">
+            <div className="print:hidden px-4 py-2 border-b border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between">
               <input
                 type="text"
                 value={searchTerm}
@@ -1012,11 +1090,16 @@ export const EmiCalculatorPage: React.FC = () => {
             </div>
           )}
 
+          {/* PRINT-ONLY TABLE TITLE */}
+          <div className="hidden print:block mb-2 font-bold text-sm text-black border-b border-black pb-1">
+            Complete Repayment Schedule Breakdown
+          </div>
+
           {/* TABLE RENDERING */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto print:overflow-visible">
+            {/* SCREEN VIEW: YEARLY SUMMARY / ACCORDION */}
             {tableMode === 'yearly' ? (
-              /* YEARLY ACCORDION TABLE */
-              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <div className="print:hidden divide-y divide-zinc-200 dark:divide-zinc-800">
                 {result.yearlySchedule.map((year: AmortizationYear) => {
                   const isExpanded = Boolean(expandedYears[year.yearNumber])
                   return (
@@ -1094,15 +1177,22 @@ export const EmiCalculatorPage: React.FC = () => {
                                 <th className="py-2 px-2">#</th>
                                 <th className="py-2 px-2">Payment Date</th>
                                 <th className="py-2 px-2 text-right">EMI (₹)</th>
-                                <th className="py-2 px-2 text-right text-emerald-600 dark:text-emerald-400">Principal (₹)</th>
-                                <th className="py-2 px-2 text-right text-amber-600 dark:text-amber-400">Interest (₹)</th>
+                                <th className="py-2 px-2 text-right text-emerald-600 dark:text-emerald-400">
+                                  Principal (₹)
+                                </th>
+                                <th className="py-2 px-2 text-right text-amber-600 dark:text-amber-400">
+                                  Interest (₹)
+                                </th>
                                 <th className="py-2 px-2 text-right">Remaining Balance (₹)</th>
                                 <th className="py-2 px-2 text-right font-sans">Loan Paid</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-900/60">
                               {year.months.map((m) => (
-                                <tr key={m.installmentNumber} className="hover:bg-zinc-100/60 dark:hover:bg-zinc-900/80 transition-colors">
+                                <tr
+                                  key={m.installmentNumber}
+                                  className="hover:bg-zinc-100/60 dark:hover:bg-zinc-900/80 transition-colors"
+                                >
                                   <td className="py-1.5 px-2 text-zinc-400">{m.installmentNumber}</td>
                                   <td className="py-1.5 px-2 font-medium text-zinc-800 dark:text-zinc-200 font-sans">
                                     {m.paymentDate}
@@ -1143,23 +1233,30 @@ export const EmiCalculatorPage: React.FC = () => {
                 })}
               </div>
             ) : (
-              /* CONTINUOUS MONTHLY TABLE */
-              <table className="w-full text-left text-xs font-mono">
+              /* SCREEN VIEW: CONTINUOUS MONTHLY TABLE */
+              <table className="print:hidden w-full text-left text-xs font-mono">
                 <thead>
                   <tr className="text-[10px] text-zinc-400 uppercase tracking-wider font-sans border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80">
                     <th className="py-2.5 px-3">#</th>
                     <th className="py-2.5 px-3">Payment Date</th>
                     <th className="py-2.5 px-3">Year</th>
                     <th className="py-2.5 px-3 text-right">Monthly EMI (₹)</th>
-                    <th className="py-2.5 px-3 text-right text-emerald-600 dark:text-emerald-400">Principal (₹)</th>
-                    <th className="py-2.5 px-3 text-right text-amber-600 dark:text-amber-400">Interest (₹)</th>
+                    <th className="py-2.5 px-3 text-right text-emerald-600 dark:text-emerald-400">
+                      Principal (₹)
+                    </th>
+                    <th className="py-2.5 px-3 text-right text-amber-600 dark:text-amber-400">
+                      Interest (₹)
+                    </th>
                     <th className="py-2.5 px-3 text-right">Remaining Balance (₹)</th>
                     <th className="py-2.5 px-3 text-right font-sans">Progress</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/80">
                   {filteredMonths.map((m) => (
-                    <tr key={m.installmentNumber} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                    <tr
+                      key={m.installmentNumber}
+                      className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors"
+                    >
                       <td className="py-2 px-3 text-zinc-400 font-mono">{m.installmentNumber}</td>
                       <td className="py-2 px-3 font-medium text-zinc-900 dark:text-zinc-100 font-sans">
                         {m.paymentDate}
@@ -1197,13 +1294,66 @@ export const EmiCalculatorPage: React.FC = () => {
                 </tbody>
               </table>
             )}
+
+            {/* PRINT-ONLY COMPLETE CLEAN TABLE */}
+            <table className="hidden print:table w-full text-left text-[9pt] font-mono border-collapse">
+              <thead>
+                <tr className="text-[8pt] text-black uppercase tracking-wider font-sans border-b-2 border-zinc-600 bg-zinc-100">
+                  <th className="py-1 px-2 border-b border-zinc-400">#</th>
+                  <th className="py-1 px-2 border-b border-zinc-400">Payment Date</th>
+                  <th className="py-1 px-2 border-b border-zinc-400">Period</th>
+                  <th className="py-1 px-2 text-right border-b border-zinc-400">EMI (₹)</th>
+                  <th className="py-1 px-2 text-right text-black font-semibold border-b border-zinc-400">
+                    Principal (₹)
+                  </th>
+                  <th className="py-1 px-2 text-right text-black font-semibold border-b border-zinc-400">
+                    Interest (₹)
+                  </th>
+                  <th className="py-1 px-2 text-right border-b border-zinc-400">Balance (₹)</th>
+                  <th className="py-1 px-2 text-right font-mono border-b border-zinc-400">Paid %</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200">
+                {result.monthlySchedule.map((m) => (
+                  <tr
+                    key={m.installmentNumber}
+                    className="print-break-inside-avoid"
+                  >
+                    <td className="py-1 px-2 text-black font-mono">
+                      {m.installmentNumber}
+                    </td>
+                    <td className="py-1 px-2 font-medium text-black font-sans">
+                      {m.paymentDate}
+                    </td>
+                    <td className="py-1 px-2 text-zinc-700 font-sans text-[8pt]">
+                      Yr {m.yearNumber} (M{m.monthInYear})
+                    </td>
+                    <td className="py-1 px-2 text-right font-bold text-black">
+                      {formatIndianCurrency(m.emiAmount, { hideSymbol: true })}
+                    </td>
+                    <td className="py-1 px-2 text-right text-black font-semibold">
+                      {formatIndianCurrency(m.principalPaid, { hideSymbol: true })}
+                    </td>
+                    <td className="py-1 px-2 text-right text-black font-semibold">
+                      {formatIndianCurrency(m.interestPaid, { hideSymbol: true })}
+                    </td>
+                    <td className="py-1 px-2 text-right text-black font-semibold">
+                      {formatIndianCurrency(m.remainingBalance, { hideSymbol: true })}
+                    </td>
+                    <td className="py-1 px-2 text-right font-mono">
+                      {m.percentagePaid}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
 
         {/* ======================================================================= */}
-        {/* 5. EDUCATIONAL CALL TO ACTION & QUADRANT ADVICE                         */}
+        {/* 5. EDUCATIONAL CALL TO ACTION & QUADRANT ADVICE (HIDDEN ON PRINT)       */}
         {/* ======================================================================= */}
-        <div className="rounded-2xl border border-emerald-200/90 bg-emerald-50/50 p-6 dark:border-emerald-900/80 dark:bg-emerald-950/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="print:hidden rounded-2xl border border-emerald-200/90 bg-emerald-50/50 p-6 dark:border-emerald-900/80 dark:bg-emerald-950/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -1228,9 +1378,9 @@ export const EmiCalculatorPage: React.FC = () => {
       </main>
 
       {/* ========================================================================= */}
-      {/* 6. CALCULATOR FOOTER                                                     */}
+      {/* 6. CALCULATOR FOOTER (HIDDEN ON PRINT)                                   */}
       {/* ========================================================================= */}
-      <footer className="mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-6 px-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
+      <footer className="print:hidden mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-6 px-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-bold text-zinc-800 dark:text-zinc-200">MY QUADRANT</span>

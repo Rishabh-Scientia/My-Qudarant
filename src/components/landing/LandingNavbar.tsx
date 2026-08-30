@@ -48,7 +48,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
               <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
                 MY QUADRANT
               </span>
-              <span className="inline-flex items-center rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 uppercase tracking-wide leading-none">
+              <span className="hidden xs:inline-flex items-center rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 uppercase tracking-wide leading-none">
                 INR ₹
               </span>
             </div>
@@ -120,19 +120,8 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Actions */}
         <div className="flex items-center gap-2 sm:hidden">
-          <a
-            href="/?tab=emi-calculator"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1 text-[11px] font-bold"
-            title="Open EMI Calculator in new tab"
-          >
-            <Calculator className="h-3.5 w-3.5" />
-            <span>EMI</span>
-          </a>
-
           {user ? (
             <Button
               variant="primary"
