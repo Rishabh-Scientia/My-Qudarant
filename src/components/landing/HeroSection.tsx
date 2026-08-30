@@ -71,7 +71,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAuth }) => {
               See How It Works
             </Button>
             <a
-              href="/emi-calculator"
+              href="/?tab=emi-calculator"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 dark:hover:bg-emerald-900 transition-all shadow-xs group"

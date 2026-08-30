@@ -61,7 +61,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onOpenAuth }) => {
 
         <div className="flex flex-wrap items-center gap-5 sm:gap-6">
           <a
-            href="/emi-calculator"
+            href="/?tab=emi-calculator"
             target="_blank"
             rel="noopener noreferrer"
             className="text-emerald-700 dark:text-emerald-400 font-semibold hover:underline flex items-center gap-1"

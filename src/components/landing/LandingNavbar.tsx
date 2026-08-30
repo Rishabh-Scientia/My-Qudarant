@@ -73,7 +73,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
 
           {/* Dedicated EMI Calculator Tab (Opens in New Tab) */}
           <a
-            href="/emi-calculator"
+            href="/?tab=emi-calculator"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50/80 px-2.5 py-1 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:hover:bg-emerald-900/80 transition-all shadow-2xs group"
@@ -123,7 +123,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-2 sm:hidden">
           <a
-            href="/emi-calculator"
+            href="/?tab=emi-calculator"
             target="_blank"
             rel="noopener noreferrer"
             className="p-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1 text-[11px] font-bold"
@@ -180,7 +180,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
             ))}
 
             <a
-              href="/emi-calculator"
+              href="/?tab=emi-calculator"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}

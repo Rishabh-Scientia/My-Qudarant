@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-1 sm:gap-2">
           {/* EMI Calculator Tool Link */}
           <a
-            href="/emi-calculator"
+            href="/?tab=emi-calculator"
             target="_blank"
             rel="noopener noreferrer"
             title="Open Loan EMI Calculator in a new tab"
