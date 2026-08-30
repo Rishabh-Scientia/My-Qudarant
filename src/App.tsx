@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from './context/AuthContext'
-import { AuthScreen } from './components/auth/AuthScreen'
+import { LandingPage } from './components/landing/LandingPage'
 import { Header } from './components/layout/Header'
 import { MobileBottomNav, MobileTabType } from './components/layout/MobileBottomNav'
 import { HeroKpiStrip } from './components/dashboard/HeroKpiStrip'
@@ -20,6 +20,9 @@ import { format } from 'date-fns'
 
 export function App() {
   const { user, isLoading: isAuthLoading } = useAuth()
+
+  // View state for logged in users (toggle between Dashboard & Guide)
+  const [showGuide, setShowGuide] = useState(false)
 
   // Selected financial month (format: YYYY-MM)
   const [selectedMonth, setSelectedMonth] = useState<string>(() =>
@@ -80,9 +83,14 @@ export function App() {
     )
   }
 
-  // Unauthenticated screen
+  // Unauthenticated landing page
   if (!user) {
-    return <AuthScreen />
+    return <LandingPage />
+  }
+
+  // Logged-in user viewing the Guide / Landing page
+  if (showGuide) {
+    return <LandingPage onGoToDashboard={() => setShowGuide(false)} />
   }
 
   // Handle open quick add with pre-selected tab
@@ -148,6 +156,7 @@ export function App() {
         onOpenQuickAdd={() => handleOpenQuickAdd('income')}
         onOpenCheckin={() => setIsCheckinOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenGuide={() => setShowGuide(true)}
       />
 
       {/* Main Content Frame */}

@@ -7,6 +7,7 @@ import {
   Sparkles,
   LogOut,
   User,
+  BookOpen,
 } from 'lucide-react'
 
 interface HeaderProps {
@@ -15,6 +16,7 @@ interface HeaderProps {
   onOpenQuickAdd: () => void
   onOpenCheckin: () => void
   onOpenProfile: () => void
+  onOpenGuide?: () => void
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQuickAdd,
   onOpenCheckin,
   onOpenProfile,
+  onOpenGuide,
 }) => {
   const { user, profile, signOut } = useAuth()
 
@@ -69,6 +72,19 @@ export const Header: React.FC<HeaderProps> = ({
               compact
             />
           </div>
+
+          {/* Guide / Landing Page Link */}
+          {onOpenGuide && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onOpenGuide}
+              className="hidden md:inline-flex font-medium text-xs text-zinc-700 dark:text-zinc-300"
+              leftIcon={<BookOpen className="h-3.5 w-3.5 text-blue-500" />}
+            >
+              Guide
+            </Button>
+          )}
 
           {/* Desktop Check-in Action */}
           <Button
