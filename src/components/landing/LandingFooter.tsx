@@ -1,6 +1,13 @@
 import React from 'react'
 import { Button } from '../ui/Button'
-import { Sparkles, ArrowRight } from 'lucide-react'
+import {
+  Sparkles,
+  ArrowRight,
+  Instagram,
+  Linkedin,
+  Mail,
+  Globe,
+} from 'lucide-react'
 
 interface LandingFooterProps {
   onOpenAuth: (mode?: 'signin' | 'signup') => void
@@ -45,7 +52,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onOpenAuth }) => {
         </div>
       </div>
 
-      {/* Main Footer Links & Copyright */}
+      {/* Main Footer Links & Nav */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 border-t border-zinc-100 dark:border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 dark:text-zinc-400">
         <div className="flex items-center gap-2">
           {/* Logo Symbol */}
@@ -56,10 +63,10 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onOpenAuth }) => {
             <span className="flex items-center justify-center text-emerald-400 dark:text-emerald-600 font-extrabold">I</span>
           </div>
           <span className="font-bold text-zinc-800 dark:text-zinc-200">MY QUADRANT</span>
-          <span>© {new Date().getFullYear()} — Built for Indian Wealth Builders.</span>
+          <span className="text-zinc-400 hidden sm:inline">• Cashflow & Freedom Tracker</span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-5 sm:gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-6">
           <a
             href="/?tab=emi-calculator"
             target="_blank"
@@ -83,6 +90,80 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onOpenAuth }) => {
           </a>
         </div>
       </div>
+
+      {/* Your Bench Attribution & Social Links Section */}
+      <div className="border-t border-zinc-100 dark:border-zinc-900/80 bg-zinc-50/50 dark:bg-zinc-950 py-8 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center space-y-4">
+          {/* Attribution Text */}
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal">
+            © {new Date().getFullYear()} MyQuadrant | A{' '}
+            <a
+              href="https://your-bench-flax.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-baseline hover:underline"
+            >
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">Your</span>
+              <span className="font-bold text-zinc-900 dark:text-zinc-100 ml-1">Bench</span>
+            </a>{' '}
+            Product. All rights reserved.
+          </p>
+
+          {/* 4 Social & Contact Action Cards */}
+          <div className="flex items-center justify-center gap-2.5 sm:gap-3">
+            {/* 1. Instagram */}
+            <a
+              href="https://www.instagram.com/your.bench"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-pink-600 dark:hover:text-pink-400 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-2xs hover:scale-105 active:scale-95 transition-all"
+              title="Follow Your Bench on Instagram"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+
+            {/* 2. LinkedIn */}
+            <a
+              href="https://www.linkedin.com/company/yourbench/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-2xs hover:scale-105 active:scale-95 transition-all"
+              title="Connect with Your Bench on LinkedIn"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="h-4 w-4" />
+            </a>
+
+            {/* 3. Mail */}
+            <a
+              href="mailto:yoursbench@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-2xs hover:scale-105 active:scale-95 transition-all"
+              title="Email Your Bench (yoursbench@gmail.com)"
+              aria-label="Email"
+            >
+              <Mail className="h-4 w-4" />
+            </a>
+
+            {/* 4. Website */}
+            <a
+              href="https://your-bench-flax.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 w-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-teal-600 dark:hover:text-teal-400 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-2xs hover:scale-105 active:scale-95 transition-all"
+              title="Visit Your Bench Official Website"
+              aria-label="Website"
+            >
+              <Globe className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </div>
     </footer>
   )
 }
+
+export default LandingFooter
+
